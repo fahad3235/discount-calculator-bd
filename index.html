@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Discount Calculator BD</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <h1 data-i18n="title">Discount Calculator BD</h1>
+  <p class="sub" data-i18n="subtitle">Was vs now prices, VAT, and deal comparison - offline, in taka.</p>
+  <button id="lang-btn" class="lang-btn" type="button">Bangla</button>
+</header>
+
+<nav class="tabs" role="tablist">
+  <button type="button" class="tab active" data-tab="calc" data-i18n="tab_calc">Calculator</button>
+  <button type="button" class="tab" data-tab="compare" data-i18n="tab_compare">Compare Deals</button>
+  <button type="button" class="tab" data-tab="history" data-i18n="tab_history">History</button>
+  <button type="button" class="tab" data-tab="data" data-i18n="tab_data">Data</button>
+</nav>
+
+<main>
+<section id="section-calc" class="panel">
+  <h2 data-i18n="calc_heading">Single deal</h2>
+  <div class="field">
+    <label for="price" data-i18n="lbl_price">Original price (taka)</label>
+    <input id="price" inputmode="decimal" placeholder="1000" autocomplete="off">
+  </div>
+  <div class="field">
+    <span class="lbl" data-i18n="lbl_mode">Discount type</span>
+    <label class="radio"><input type="radio" name="mode" value="pct" id="mode-pct" checked> <span data-i18n="mode_pct">Percent off (%)</span></label>
+    <label class="radio"><input type="radio" name="mode" value="flat" id="mode-flat"> <span data-i18n="mode_flat">Flat off (taka)</span></label>
+  </div>
+  <div class="field">
+    <label for="disc" id="disc-label" data-i18n="lbl_disc_pct">Discount (%)</label>
+    <input id="disc" inputmode="decimal" placeholder="20" autocomplete="off">
+  </div>
+  <div class="presets" aria-label="presets">
+    <button type="button" class="chip" data-preset="10">10%</button>
+    <button type="button" class="chip" data-preset="20">20%</button>
+    <button type="button" class="chip" data-preset="30">30%</button>
+    <button type="button" class="chip" data-preset="50">50%</button>
+  </div>
+  <div class="row">
+    <div class="field half">
+      <label for="qty" data-i18n="lbl_qty">Quantity</label>
+      <input id="qty" inputmode="numeric" value="1" autocomplete="off">
+    </div>
+    <div class="field half">
+      <label for="vat" data-i18n="lbl_vat">VAT (%) - optional</label>
+      <input id="vat" inputmode="decimal" value="0" autocomplete="off">
+    </div>
+  </div>
+  <p id="calc-error" class="error" hidden></p>
+  <button id="calc-btn" class="primary" type="button" data-i18n="btn_calc">Calculate</button>
+
+  <div id="calc-results" class="results" hidden>
+    <h3 data-i18n="res_heading">Result</h3>
+    <table class="res-table">
+      <tr><td data-i18n="res_orig">Original (per item)</td><td id="res-orig"></td></tr>
+      <tr><td data-i18n="res_disc">Discount (per item)</td><td id="res-disc"></td></tr>
+      <tr><td data-i18n="res_net">After discount</td><td id="res-net"></td></tr>
+      <tr><td data-i18n="res_vat">VAT (per item)</td><td id="res-vat"></td></tr>
+      <tr><td data-i18n="res_unit">Final (per item)</td><td id="res-unit"></td></tr>
+      <tr class="big"><td data-i18n="res_total">Total to pay</td><td id="res-total"></td></tr>
+      <tr class="save"><td data-i18n="res_saved">You save</td><td id="res-saved"></td></tr>
+      <tr><td data-i18n="res_eff">Effective discount</td><td id="res-eff"></td></tr>
+    </table>
+    <button id="save-btn" class="secondary" type="button" data-i18n="btn_save">Save to history</button>
+    <p id="save-msg" class="okmsg" hidden></p>
+  </div>
+</section>
+
+<section id="section-compare" class="panel" hidden>
+  <h2 data-i18n="cmp_heading">Which deal is cheaper?</h2>
+  <div class="deal-grid">
+    <div class="deal">
+      <h3 data-i18n="deal_a">Deal A</h3>
+      <div class="field"><label for="cmp-a-price" data-i18n="lbl_price">Original price (taka)</label><input id="cmp-a-price" inputmode="decimal" placeholder="1000"></div>
+      <div class="field"><label for="cmp-a-pct" data-i18n="lbl_disc_pct">Discount (%)</label><input id="cmp-a-pct" inputmode="decimal" placeholder="20"></div>
+    </div>
+    <div class="deal">
+      <h3 data-i18n="deal_b">Deal B</h3>
+      <div class="field"><label for="cmp-b-price" data-i18n="lbl_price">Original price (taka)</label><input id="cmp-b-price" inputmode="decimal" placeholder="900"></div>
+      <div class="field"><label for="cmp-b-pct" data-i18n="lbl_disc_pct">Discount (%)</label><input id="cmp-b-pct" inputmode="decimal" placeholder="10"></div>
+    </div>
+  </div>
+  <div class="field"><label for="cmp-qty" data-i18n="lbl_qty">Quantity</label><input id="cmp-qty" inputmode="numeric" value="1"></div>
+  <p id="cmp-error" class="error" hidden></p>
+  <button id="cmp-btn" class="primary" type="button" data-i18n="btn_compare">Compare</button>
+  <div id="cmp-results" class="results" hidden>
+    <p><span data-i18n="cmp_a_final">Deal A final (per item)</span>: <b id="cmp-a-final"></b></p>
+    <p><span data-i18n="cmp_b_final">Deal B final (per item)</span>: <b id="cmp-b-final"></b></p>
+    <p class="verdict" id="cmp-verdict"></p>
+    <button id="cmp-save-btn" class="secondary" type="button" data-i18n="btn_save">Save to history</button>
+    <p id="cmp-save-msg" class="okmsg" hidden></p>
+  </div>
+</section>
+
+<section id="section-history" class="panel" hidden>
+  <h2 data-i18n="hist_heading">Saved calculations</h2>
+  <p id="history-empty" data-i18n="hist_empty">No saved calculations yet. Calculate a deal and tap Save to history.</p>
+  <ul id="history-list" class="hist"></ul>
+  <button id="hist-clear" class="danger" type="button" data-i18n="btn_clear_hist">Clear history</button>
+</section>
+
+<section id="section-data" class="panel" hidden>
+  <h2 data-i18n="data_heading">Export / import</h2>
+  <p data-i18n="data_blurb">Your history lives only in this browser. Export a JSON backup, or paste one back here.</p>
+  <button id="export-btn" class="secondary" type="button" data-i18n="btn_export">Export JSON</button>
+  <a id="export-link" hidden download="discount-calculator-bd-backup.json"></a>
+  <div class="field">
+    <label for="import-text" data-i18n="lbl_import">Paste backup JSON</label>
+    <textarea id="import-text" rows="6" placeholder='{"version":1,"entries":[]}'></textarea>
+  </div>
+  <button id="import-btn" class="primary" type="button" data-i18n="btn_import">Import</button>
+  <p id="import-msg" class="okmsg" hidden></p>
+  <p id="import-error" class="error" hidden></p>
+  <hr>
+  <button id="erase-btn" class="danger" type="button" data-i18n="btn_erase">Erase all data</button>
+  <p id="erase-msg" class="okmsg" hidden></p>
+</section>
+</main>
+
+<footer>
+  <p data-i18n="footer">Offline tool. Prices and discounts are the ones you type - no live market rates. VAT is applied after discount, as entered.</p>
+</footer>
+
+<script src="logic.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
