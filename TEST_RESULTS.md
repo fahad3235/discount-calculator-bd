@@ -1,4 +1,4 @@
-# TEST RESULTS — discount-calculator-bd (run #220, 2026-11-03)
+# TEST RESULTS — discount-calculator-bd (run #221, 2026-11-03)
 
 ## Unit tests — 45/45 passed (`node tests/logic.test.js`)
 
